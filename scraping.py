@@ -55,7 +55,7 @@ def main():
     second_stock = get_valid_symbol('Enter the second symbol:')
     third_stock = get_valid_symbol('Enter the third symbol:')
     fourth_stock = get_valid_symbol('Enter the fourth symbol:')
-    fifth_stock = get_valid_symbol('Enter the index fund:')
+    fifth_stock = get_valid_symbol('Enter the fifth stock:')
 
     symbols = [first_stock, second_stock, third_stock, fourth_stock, fifth_stock]
 
