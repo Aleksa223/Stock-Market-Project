@@ -2,7 +2,7 @@
 
 ## Description
 
-The Stock-Market-Project is a Python-based tool that scrapes stock information from Reuters and visualizes the data through charts. It performs data extraction using BeautifulSoup and Selenium, stores the scraped data in an Excel file (`output_data.xlsx`), and then creates insightful charts for each sheet within the Excel file to help with data analysis.
+The Stock-Market-Project is a Python-based project that scrapes stock information from Reuters and visualizes the data through charts. It performs data extraction using BeautifulSoup and Selenium, stores the scraped data in an Excel file (`output_data.xlsx`), and then creates insightful charts for each sheet within the Excel file to help with data analysis.
 
 ## Components
 
