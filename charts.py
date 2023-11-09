@@ -1,3 +1,6 @@
+import tkinter as tk
+from tkinter import messagebox
+import threading
 import pandas as pd
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
@@ -37,7 +40,7 @@ colors = ['#6a1b9a', '#7b1fa2', '#8e24aa', '#9c27b0', '#ab47bc', '#ba68c8']
 plt.style.use('fivethirtyeight')
 
 # Function to create, sort, and save aesthetically enhanced charts
-def create_and_save_charts(data_frames, cell_positions, colors, image_scale=0.6):
+def create_and_save_charts(excel_file, data_frames, cell_positions, colors, image_scale=0.6):
     for sheet_name, data_frame in data_frames.items():
         book = load_workbook(excel_file)
         ws = book[sheet_name]
@@ -91,5 +94,48 @@ def create_and_save_charts(data_frames, cell_positions, colors, image_scale=0.6)
             book.save(excel_file)
             print(f"Charts saved in {sheet_name} sheet.")
 
-# Creating and saving the enhanced charts
-create_and_save_charts(data_frames, cell_positions, colors, image_scale=0.55)
+class ChartApp(tk.Tk):
+    def __init__(self, excel_file, data_frames, cell_positions, colors):
+        super().__init__()
+
+        self.title("Charts Generation")
+        self.excel_file = excel_file
+        self.data_frames = data_frames
+        self.cell_positions = cell_positions
+        self.colors = colors
+        self.label = tk.Label(self, text="Generating charts. Please wait...")
+        self.label.pack(pady=10)
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.thread = threading.Thread(
+            target=self.threaded_chart_creation,
+            args=(0.5,),
+            daemon=True
+        )
+        self.thread.start()
+
+    def threaded_chart_creation(self, image_scale):
+        try:
+            create_and_save_charts(self.excel_file, self.data_frames, self.cell_positions, self.colors, image_scale)
+            messagebox.showinfo("Success", "Charts have been generated successfully!")
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+        finally:
+            self.on_finished()
+
+    def on_finished(self):
+        self.label['text'] = "Chart generation completed!"
+        self.update_idletasks()
+        self.after(2000, self.destroy)  # Close the window after a delay
+
+    def on_closing(self):
+        # This can be used to stop the chart generation thread if necessary
+        # self.thread.stop()
+        if messagebox.askokcancel("Quit", "Do you want to quit the application?"):
+            self.destroy()
+
+#Generate GUI
+def generate_charts_gui(excel_file, data_frames, cell_positions, colors):
+    app = ChartApp(excel_file, data_frames, cell_positions, colors)
+    app.mainloop()
+
+generate_charts_gui(excel_file, data_frames, cell_positions, colors)
